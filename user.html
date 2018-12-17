@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="lib/nprogress/nprogress.css">
+    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/common.css">
+
+    <title>乐淘首页</title>
+</head>
+
+<body>
+    <!-- 公共部分开始 -->
+    <div class="lt_aside">
+        <div class="lt_brand">
+            <h1>乐淘电商</h1>
+        </div>
+        <div class="lt_user">
+            <img src="./images/default.png" alt="">
+            <p>sacon</p>
+        </div>
+        <div class="lt_list">
+            <ul>
+                <li><a href="user.html" class="now"><i class="glyphicon glyphicon-user"></i><span>用户管理</span></a></li>
+                <li>
+                    <a href="javascript:;" class="category"><i class="glyphicon glyphicon-list"></i><span>分类管理</span></a>
+                    <div class="child" style="display:none">
+                        <a href="first.html">一级分类</a>
+                        <a href="second.html">二级分类</a>
+                    </div>
+                </li>
+                <li><a href="product.html"><i class="glyphicon glyphicon-tags"></i><span>商品管理</span></a></li>
+
+            </ul>
+        </div>
+    </div>
+    <!--顶部开始 -->
+    <div class="lt_left">
+        <div class="topbar">
+            <a href="javascript:;" class="pull-left top_a_left"><i class="glyphicon glyphicon-align-justify"></i></a>
+            <a href="" class="pull-right "><i class="glyphicon glyphicon-log-out"></i></a>
+        </div>
+        <div class="main">
+            <div class="container-fluid">
+                <ol class="breadcrumb mt_20">
+                    <li><a href="#">管理</a></li>
+
+                    <li class="active">用户管理</li>
+                </ol>
+
+                <div class="content">
+                    <table class="table table-bordered table-hover ">
+                        <thead>
+                            <tr>
+                                <th width="10%" class="text-center">序号</th>
+                                <th width="20%" class="text-center">用户名</th>
+                                <th width="30%" class="text-center">手机号</th>
+                                <th width="20%" class="text-center">状态</th>
+                                <th width="20%" class="text-center">操作</th>
+
+                            </tr>
+                        </thead>
+                        <tbody class="text-center">
+
+                        </tbody>
+                    </table>
+                    <div class="pull-right">
+                        <ul id="pagintor"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- 模态框 -->
+
+    <!-- Button trigger modal -->
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">温馨提示</h4>
+                </div>
+                <div class="modal-body">
+                    <p style="color:red"><i class="glyphicon glyphicon-info-sign"></i>你确定执行此操作吗?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-primary" id="sure">确定</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="text/html" id="tmp">
+        {{each rows v i}}
+        <tr>
+                <td>{{i+1+(page-1)*size}}</td>
+                <td>{{v.username}}</td>
+                <td>{{v.mobile}}</td>
+                <td>{{v.isDelete == 1 ? '正常':'禁用'}}</td>
+                <td data-id="{{v.id}}" data-isdelete= "{{v.isDelete}}">
+                    {{if v.isDelete == 1}}
+                    <button class="btn btn-danger">禁用</button>
+                    {{else}}
+                    <button class="btn btn-success">启用</button>
+                    {{/if}}
+                </td>
+            </tr>
+        {{/each}}
+    </script>
+
+
+    <script src="lib/jquery/jquery.min.js"></script>
+    <script src="js/isLogin.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="lib/nprogress/nprogress.js"></script>
+    <script src="lib/artTemplate/template-web.js"></script>
+    <script src="lib/bootstrap-paginator/bootstrap-paginator.min.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/index.js"></script>
+    <script>
+        var currentPage = 1;
+        var pageSize = 5;
+        var total, totalPage;
+        render();
+        function render() {
+            $.ajax({
+                url: '/user/queryUser',
+                data: {
+                    page: currentPage,
+                    pageSize: pageSize
+
+                },
+                dataType: 'json',
+                success: function (res) {
+                    console.log(res);
+                    var htmlstr = template('tmp', res);
+                    $('tbody').html(htmlstr);
+
+
+                    $("#pagintor").bootstrapPaginator({
+                        bootstrapMajorVersion: 3,//默认是2，如果是bootstrap3版本，这个参数必填
+                        currentPage: currentPage,//当前页
+                        totalPages: Math.ceil(res.total / res.size),
+                        size: "small",//设置控件的大小，mini, small, normal,large
+                        onPageClicked: function (a, b, c, page) {
+                            currentPage = page;
+                            render();
+
+                        }
+                    });
+                }
+            })
+        }
+
+
+        //  添加点击事件
+        var id, isDelete;
+        $('tbody').on('click', '.btn', function () {
+            // 显示模态框
+
+            id = $(this).parent().data('id');
+            isDelete = $(this).parent().data('isdelete') == 1 ? 0 : 1;
+            // console.log(id, isDelete);
+
+            $('#myModal').modal('show');
+
+            $('#sure').off('click').click(function () {
+                // console.log(id, isDelete);
+                $.ajax({
+                    url: '/user/updateUser',
+                    type: 'post',
+                    data: {
+                        id: id,
+                        isDelete: isDelete
+                    },
+                    success: function (res) {
+                        // console.log(res);
+
+                        if (res.success) {
+
+                            $('#myModal').modal('hide');
+                            render();
+                        }
+
+                    }
+                })
+            })
+        })
+
+
+    </script>
+</body>
+
+</html>

@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="lib/nprogress/nprogress.css">
     <link rel="stylesheet" href="css/common.css">
+
     <title>乐淘首页</title>
 </head>
 
@@ -38,18 +40,108 @@
     <!--顶部开始 -->
     <div class="lt_left">
         <div class="topbar">
-            <a href="" class="pull-left"><i class="glyphicon glyphicon-align-justify"></i></a>
-            <a href="" class="pull-right"><i class="glyphicon glyphicon-log-out"></i></a>
+            <a href="javascript:;" class="pull-left top_a_left"><i class="glyphicon glyphicon-align-justify"></i></a>
+            <a href="" class="pull-right "><i class="glyphicon glyphicon-log-out"></i></a>
         </div>
         <div class="main">
+            <div class="container-fluid">
+                <ol class="breadcrumb mt_20">
+                    <li><a href="#">管理</a></li>
 
+                    <li class="active">首页</li>
+                </ol>
+                <div id="main_box" class="pull-left">
+
+                </div>
+
+                <div id="main_box2" class="pull-right">
+
+                </div>
+            </div>
         </div>
     </div>
     <script src="lib/jquery/jquery.min.js"></script>
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="lib/nprogress/nprogress.js"></script>
+    <script src="lib/echarts/echarts.min.js"></script>
+    
     <script src="js/common.js"></script>
-    <script>
-        // $('.child').slideToggle
+    <script src="js/isLogin.js"></script>
+    <script src="js/index.js"></script>
+    <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        (function () {
+            var myChart = echarts.init(document.getElementById('main_box'));
+
+            // 指定图表的配置项和数据
+            var option = {
+                title: {
+                    text: '2017年注册人数'
+                },
+                tooltip: {},
+                legend: {
+                    data: ['人数']
+                },
+                xAxis: {
+                    data: ["1月", "2月", "3月", "4月", "5月", "6月"]
+                },
+                yAxis: {},
+                series: [{
+                    name: '人数',
+                    type: 'bar',
+                    data: [645, 904, 836, 1022, 1610, 820]
+                }]
+            };
+
+            // 使用刚指定的配置项和数据显示图表。
+            myChart.setOption(option);
+        })();
+        (function () {
+            var myChart = echarts.init(document.getElementById('main_box2'));
+            option = {
+                title: {
+                    text: '热门品牌销售',
+                    subtext: '我是你大爷',
+                    x: 'center'
+                },
+                tooltip: {
+                    trigger: 'item',
+                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left',
+                    data: ['阿迪达斯', '耐克', '安踏', '特步', '阿迪王']
+                },
+                series: [
+                    {
+                        name: '访问来源',
+                        type: 'pie',
+                        radius: '55%',
+                        center: ['50%', '60%'],
+                        data: [
+                            { value: 335, name: '阿迪达斯' },
+                            { value: 310, name: '耐克' },
+                            { value: 234, name: '安踏' },
+                            { value: 135, name: '特步' },
+                            { value: 1548, name: '阿迪王' }
+                        ],
+                        itemStyle: {
+                            emphasis: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        })();
+
+
+
+
     </script>
 </body>
 
