@@ -5,12 +5,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/common.css">
     <title>乐淘首页</title>
 </head>
 
 <body>
-    <p>我是首页</p>
-    <p>主页开始</p>
+    <!-- 公共部分开始 -->
+    <div class="lt_aside">
+        <div class="lt_brand">
+            <h1>乐淘电商</h1>
+        </div>
+        <div class="lt_user">
+            <img src="./images/default.png" alt="">
+            <p>sacon</p>
+        </div>
+        <div class="lt_list">
+            <ul>
+                <li><a href="user.html"><i class="glyphicon glyphicon-user"></i><span>用户管理</span></a></li>
+                <li>
+                    <a href="javascript:;" class="category"><i class="glyphicon glyphicon-list"></i><span>分类管理</span></a>
+                    <div class="child" style="display:none">
+                        <a href="first.html">一级分类</a>
+                        <a href="second.html">二级分类</a>
+                    </div>
+                </li>
+                <li><a href="product.html"><i class="glyphicon glyphicon-tags"></i><span>商品管理</span></a></li>
+
+            </ul>
+        </div>
+    </div>
+    <!--顶部开始 -->
+    <div class="lt_left">
+        <div class="topbar">
+            <a href="" class="pull-left"><i class="glyphicon glyphicon-align-justify"></i></a>
+            <a href="" class="pull-right"><i class="glyphicon glyphicon-log-out"></i></a>
+        </div>
+        <div class="main">
+
+        </div>
+    </div>
+    <script src="lib/jquery/jquery.min.js"></script>
+    <script src="lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="js/common.js"></script>
+    <script>
+        // $('.child').slideToggle
+    </script>
 </body>
 
 </html>
