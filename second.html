@@ -97,17 +97,13 @@
                                 </ul>
                             </div>
 
-                            <input type="hidden" name="categoryId">
+                            <input type="hidden" name="categoryId" id="cateId">
                         </div>
                         <div class="form-group">
                             <input type="text" class="form-control" placeholder="请输入二级分类" name="brandName">
                         </div>
                         <div class="form-group">
                             <label class="btn btn-default" for="fileupload">上传图片</label>
-                            <!-- 注意:
-                                    1. 指定name用于让后台获取图片, 所以不能乱写
-                                    2. 指定data-url, 指定接口地址
-                            -->
                             <input type="file" name="pic1" data-url="/category/addSecondCategoryPic" id="fileupload"
                                 style="display: none;">
                         </div>
@@ -116,14 +112,17 @@
                             <!-- 图片地址 -->
                             <input type="hidden" name="brandLogo">
                         </div>
+                        <div class="form-group">
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                <button type="submit" class="btn btn-primary btn-sure">添加</button>
+                            </div>
+                        </div>
                     </form>
                 </div>
 
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                    <button type="submit" class="btn btn-primary btn-sure" form="form">添加</button>
-                </div>
+
 
             </div><!-- /.modal-content -->
         </div><!-- /.modal-dialog -->
@@ -142,11 +141,13 @@
 
     <script type="text/html" id="tmp1">
         {{each rows v i}}
-        <li><a href="#">{{v.categoryName}}</a></li>
+        <li><a href="#" data-id="{{v.id}}">{{v.categoryName}}</a></li>
             {{/each}}
     </script>
 
     <script src="lib/jquery/jquery.min.js"></script>
+    <script src="lib/jquery-fileupload/jquery.ui.widget.js"></script>
+    <script src="lib/jquery-fileupload/jquery.fileupload.js"></script>
     <script src="js/isLogin.js"></script>
     <script src="lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="lib/nprogress/nprogress.js"></script>
@@ -210,12 +211,92 @@
                 console.log(txt);
 
                 // 拿到 categoryId
-                // var id = $(this).data("id");
+                var id = $(this).data("id");
 
                 // 修改文本内容
                 $('#dropdownText').text(txt);
+                $('[name="categoryId"]').val(id);
+
+                $('#form').data("bootstrapValidator").updateStatus("categoryId", "VALID");
             })
 
+            // 注册表单校验
+
+            $('#form').bootstrapValidator({
+                excluded: [],
+                feedbackIcons: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    //校验用户名，对应name表单的name属性
+                    categoryId: {
+                        validators: {
+                            //不能为空
+                            notEmpty: {
+                                message: '分类不能为空'
+                            }
+                        }
+                    },
+                    brandName: {
+                        validators: {
+                            //不能为空
+                            notEmpty: {
+                                message: '二级分类不能为空'
+                            }
+                        }
+                    },
+                    brandLogo: {
+                        validators: {
+                            //不能为空
+                            notEmpty: {
+                                message: '头像不能为空'
+                            }
+                        }
+                    }
+
+
+
+                }
+
+            });
+
+
+            $("#fileupload").fileupload({
+                dataType: "json",
+                //e：事件对象
+                //data：图片上传后的对象，通过data.result.picAddr可以获取上传后的图片地址
+                done: function (e, data) {
+                    var res = data.result
+                    $("#imgBox img").attr('src', res.picAddr);
+                    $('[name="brandLogo"]').val(res.picAddr);
+                    $('#form').data("bootstrapValidator").updateStatus("brandLogo", "VALID")
+                }
+            });
+
+
+            $('#form').on('success.form.bv', function (e) {
+                e.preventDefault();
+
+                // 发ajax
+                $.ajax({
+                    url: '/category/addSecondCategory',
+                    type: 'POST',
+                    data: $('#form').serialize(),
+                    success: function (res) {
+                        if (res.success) {
+                            $('#addmodal').modal('hide');
+                            currentPage = 1;
+                            render();
+                            $("#form").data('bootstrapValidator').resetForm(true);
+                            $("#imgBox img").attr('src', "./images/default.png");
+                            $('#dropdownText').text("请选择1级分类");
+                        }
+
+                    }
+                })
+            })
         })
 
     </script>
