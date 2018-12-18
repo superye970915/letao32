@@ -368,7 +368,7 @@
                     // console.log(data);
                     var res = data.result;
                     $("#imgBox").prepend('<img src="' + res.picAddr + '" width="100"> ');
-                    arr.unshift(res.picAddr);
+                    arr.unshift(res);
                     if (arr.length > 3) {
                         arr.pop();
 
@@ -389,7 +389,7 @@
             $('#form').on('success.form.bv', function (e) {
                 e.preventDefault();
                 var str = $('#form').serialize() + '&picArr=' + JSON.stringify(arr);
-                // console.log(str);
+                console.log(str);
 
                 // 发ajax
                 $.ajax({
